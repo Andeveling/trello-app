@@ -1,0 +1,26 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#13321d",
+        "activityBar.background": "#13321d",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#6b46b9",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#e7e7e799",
+        "editorGroup.border": "#13321d",
+        "panel.border": "#13321d",
+        "sash.hoverBorder": "#13321d",
+        "sideBar.border": "#13321d",
+        "titleBar.activeBackground": "#215732",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.border": "#215732",
+        "titleBar.inactiveBackground": "#21573299",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#215732",
+    "cSpell.words": [
+        "autoincrement",
+        "datasource",
+        "postgresql"
+    ]
+}
