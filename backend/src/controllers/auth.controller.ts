@@ -65,6 +65,14 @@ class AuthController {
 
     res.status(StatusCodes.CREATED).json({ message: "User created" })
   }
+
+  async getMe(req: Request, res: Response, next: NextFunction) {
+    const user = res.locals.user
+    // and refresh the token
+    const token = jwt.sign({ id: user.id, email: user.email, name: user.name })
+
+    res.status(StatusCodes.OK).json({ token, user: { id: user.id, email: user.email, name: user.name } })
+  }
 }
 
 export default new AuthController()

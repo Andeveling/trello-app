@@ -1,6 +1,6 @@
 import { Router } from "express"
-import rescue from "express-rescue"
 import columnController from "../controllers/column.controller"
+import rescue from "express-rescue"
 import authMiddleware from "../middlewares/auth"
 
 const columnRouter = Router()

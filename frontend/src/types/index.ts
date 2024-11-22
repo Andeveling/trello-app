@@ -6,7 +6,11 @@ export type Profile = {
   userId: number
   user: User
 }
-
+export enum AuthStatus {
+  pending = "pending",
+  authorized = "authorized",
+  unauthorized = "unauthorized",
+}
 export type User = {
   id: number
   email: string

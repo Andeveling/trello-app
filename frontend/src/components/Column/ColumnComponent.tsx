@@ -3,11 +3,9 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { Card, CardActions, CardContent, CardHeader } from "@mui/material"
 import React from "react"
 import { Column } from "../../types"
+import TaskAction from "../Task/TasckAction"
 import TaskComponent from "../Task/TaskComponent"
 import ColumnActions from "./ColumnActions"
-import TaskFormModal from "../Task/TaskFormModal"
-import { useModal } from "../../hooks/useModal"
-import TaskAction from "../Task/TasckAction"
 
 interface ColumnComponentProps {
   column: Column
@@ -25,7 +23,6 @@ const ColumnComponent: React.FC<ColumnComponentProps> = ({ column }) => {
         backgroundColor: "rgba(24, 192, 245, 0.3)", // Fondo azul suave
       }
     : {}
-
 
   return (
     <Card
@@ -50,7 +47,7 @@ const ColumnComponent: React.FC<ColumnComponentProps> = ({ column }) => {
         </SortableContext>
       </CardContent>
       <CardActions>
-        <TaskAction />
+        <TaskAction column={column} />
       </CardActions>
     </Card>
   )

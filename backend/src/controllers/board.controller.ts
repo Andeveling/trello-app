@@ -45,6 +45,27 @@ class BoardController {
     }
   }
 
+  async getColumnsByBoardId(req: Request, res: Response, next: NextFunction) {
+    const { boardId } = req.params
+
+    try {
+      const columns = await prisma.column.findMany({
+        where: { boardId: Number(boardId) },
+        include: {
+          tasks: true,
+        },
+      })
+
+      res.status(StatusCodes.OK).json(columns)
+    } catch (error) {
+      console.error(error)
+      return next({
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: "Error fetching columns",
+      })
+    }
+  }
+
   async getByUserId(req: Request, res: Response, next: NextFunction) {
     const user = res.locals.user
 
@@ -88,18 +109,6 @@ class BoardController {
     try {
       const board = await prisma.board.findUnique({
         where: { id: Number(id) },
-        include: {
-          columns: {
-            include: {
-              tasks: { select: { id: true, title: true } }, 
-            },
-          },
-          members: {
-            include: {
-              user: { select: { id: true, name: true, email: true } },
-            },
-          },
-        },
       })
 
       if (!board) {

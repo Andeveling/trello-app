@@ -33,8 +33,8 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ open, onClose, onSubmit }
 
   const handleFormSubmit = (data: TaskFormData) => {
     onSubmit(data)
-    reset() // Clear the form after submission
-    onClose() // Close the modal
+    reset() 
+    onClose() 
   }
 
   return (

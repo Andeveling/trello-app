@@ -5,9 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import CloseIcon from "@mui/icons-material/Close"
 import { api } from "../../api/api"
-import { useAuth } from "../../auth"
 import { BoardFormData, BoardSchema } from "../../schemas/board.schema"
-
+import { useAuthStore } from "../../stores/auth.store"
 
 interface ProjectModalProps {
   open: boolean
@@ -23,7 +22,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ open, onClose }) => {
     resolver: zodResolver(BoardSchema),
   })
 
-  const { user } = useAuth()
+  const user = useAuthStore((state) => state.user)
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: async (data: BoardFormData) => {
@@ -73,7 +72,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ open, onClose }) => {
         </IconButton>
 
         <Typography variant='h6' gutterBottom>
-         Create Board
+          Create Board
         </Typography>
 
         <form onSubmit={handleSubmit(onSubmit)}>

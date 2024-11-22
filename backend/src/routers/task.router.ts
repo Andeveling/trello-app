@@ -1,26 +1,16 @@
 import { Router } from "express"
+import TaskController from "../controllers/task.controller"
 import rescue from "express-rescue"
-import taskController from "../controllers/task.controller"
 import authMiddleware from "../middlewares/auth"
 
-const taskRouter = Router()
+const router = Router()
 
-// Ruta para crear una nueva tarea
-taskRouter.route("/").post(authMiddleware, rescue(taskController.create))
+// Crear una nueva tarea
+router.route("/").post(authMiddleware, rescue(TaskController.create))
+router.route("/:id").get(authMiddleware, rescue(TaskController.getById))
+router.route("/:id").put(authMiddleware, rescue(TaskController.update))
+router.route("/:id/position").put(authMiddleware, rescue(TaskController.updateTaskPosition))
+router.route("/:id").delete(authMiddleware, rescue(TaskController.delete))
 
-// Ruta para obtener todas las tareas de un proyecto
-taskRouter.route("/project/:projectId").get(authMiddleware, rescue(taskController.getByProjectId))
 
-// Ruta para obtener una tarea por ID
-taskRouter.route("/:id").get(authMiddleware, rescue(taskController.getByProjectId))
-
-// Ruta para actualizar una tarea
-taskRouter.route("/:id").put(authMiddleware, rescue(taskController.update))
-
-// Ruta para eliminar una tarea
-taskRouter.route("/:id").delete(authMiddleware, rescue(taskController.delete))
-
-// Ruta para cambiar el estado de una tarea
-taskRouter.route("/:id/status").put(authMiddleware, rescue(taskController.updateStatus))
-
-export default taskRouter
+export default router

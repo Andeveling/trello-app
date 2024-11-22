@@ -1,6 +1,6 @@
 import { api } from "../api/api"
 
-export type User = {
+export type UserPayload = {
   id: number
   name: string
   email: string
@@ -13,7 +13,7 @@ export type LoginRequest = {
 
 export type LoginResponse = {
   token: string
-  user: User
+  user: UserPayload
 }
 
 class AuthService {
@@ -22,6 +22,10 @@ class AuthService {
     console.log(response)
     return response.data
   }
+  async checkStatus() {
+    const response = await api.get<LoginResponse>("/auth/me")
+    return response.data
+  } 
 }
 
 export default new AuthService()

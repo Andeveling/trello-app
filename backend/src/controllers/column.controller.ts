@@ -57,7 +57,6 @@ class ColumnController {
     }
   }
 
-  // Método para obtener todas las columnas de un tablero
   async getByBoardId(req: Request, res: Response, next: NextFunction) {
     const { boardId } = req.params
 
@@ -66,7 +65,7 @@ class ColumnController {
       const columns = await prisma.column.findMany({
         where: { boardId: Number(boardId) },
         include: {
-          tasks: true, // Incluye tareas si es necesario
+          tasks: true, 
         },
       })
 

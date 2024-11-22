@@ -13,12 +13,12 @@ import {
   Select,
   TextField,
 } from "@mui/material"
-import { useParams } from "@tanstack/react-router"
 import React, { Fragment } from "react"
 import { Controller, SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form"
 import { ColumnFormData, ColumnSchema } from "../../schemas/column.schema"
 import { useColumnMutation } from "../../hooks/useColumnMutation"
 import { TaskStatus } from "../../types"
+import { useParams } from "react-router-dom"
 
 interface ColumnFormProps {
   open: boolean
@@ -39,9 +39,8 @@ const ColumnFormModal: React.FC<ColumnFormProps> = ({ open, handleClose }) => {
     },
   })
 
-  const params = useParams({
-    from: "/__auth/boards/$boardId",
-  })
+  const { boardId } = useParams()
+
   const mutateColumn = useColumnMutation({ onClose: handleClose })
 
   const onSubmit: SubmitHandler<ColumnFormData> = (data) => {
@@ -92,7 +91,7 @@ const ColumnFormModal: React.FC<ColumnFormProps> = ({ open, handleClose }) => {
               />
             </Box>
 
-            <input type='hidden' value={params.boardId} {...register("boardId")} />
+            <input type='hidden' value={boardId} {...register("boardId")} />
           </DialogContent>
 
           <DialogActions>

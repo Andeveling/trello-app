@@ -1,28 +1,22 @@
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Alert, Box, Button, TextField, Typography } from "@mui/material"
 import React from "react"
 import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
 import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { TextField, Button, Box, Typography, Alert } from "@mui/material"
-import { useAuth } from "../../auth"
-import { useRouter } from "@tanstack/react-router"
-import { Route } from "../../routes/login"
-import { sleep } from "../../utils/utils"
+import { useAuthStore } from "../../stores/auth.store"
 
-const fallback = "/dashboard" as const
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
 })
 
-// Tipos de los datos del formulario
 type LoginFormValues = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
-  const { login } = useAuth()
-  const router = useRouter()
-  const search = Route.useSearch()
   const [error, setError] = React.useState<string | null>(null)
-  const [isSubmittingForm, setIsSubmittingForm] = React.useState(false)
+  const login = useAuthStore((state) => state.loginUser)
+  const navigate = useNavigate()
 
   const {
     register,
@@ -38,20 +32,13 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormValues) => {
     setError(null)
-    if (isSubmittingForm) return // Prevent multiple submits
-
-    setIsSubmittingForm(true) // Set submitting state
+    if (isSubmitting) return
 
     try {
       await login(data.email, data.password)
-      await sleep(1)
-
-      await router.navigate({ to: search.redirect ?? fallback })
-      console.log("Login exitoso!")
+      navigate("/dashboard")
     } catch (err) {
       setError("Usuario o contraseña incorrectos")
-    } finally {
-      setIsSubmittingForm(false) // Reset submitting state
     }
   }
 
@@ -114,9 +101,9 @@ export default function LoginPage() {
           variant='contained'
           color='primary'
           fullWidth
-          disabled={isSubmitting || isSubmittingForm} // Prevent multiple submissions
+          disabled={isSubmitting}
           sx={{ marginTop: 2 }}>
-          {isSubmitting || isSubmittingForm ? "Iniciando sesión..." : "Iniciar sesión"}
+          {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
         </Button>
       </Box>
     </Box>

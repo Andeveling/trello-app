@@ -1,12 +1,9 @@
+import { ViewKanban } from "@mui/icons-material"
 import { Box, Button, Typography } from "@mui/material"
-import { useNavigate } from "@tanstack/react-router"
+import { Link, useNavigate } from "react-router-dom"
 
 export default function HomePage() {
   const navigate = useNavigate() // Para manejar la navegación
-
-  const handleGetStarted = () => {
-    navigate({ to: "/login" }) // Navegar al login
-  }
 
   return (
     <Box
@@ -19,6 +16,7 @@ export default function HomePage() {
         backgroundColor: "#f0f4f8",
         padding: 4,
       }}>
+      <ViewKanban sx={{ fontSize: "10rem", color: "primary.main" }} />
       <Box
         sx={{
           textAlign: "center",
@@ -34,21 +32,21 @@ export default function HomePage() {
           ¡Colabora, organiza y prioriza como un profesional!
         </Typography>
       </Box>
-
-      <Button
-        variant='contained'
-        color='primary'
-        size='large'
-        onClick={handleGetStarted}
-        sx={{
-          paddingX: 4,
-          paddingY: 1.5,
-          fontSize: "1rem",
-          textTransform: "none",
-          borderRadius: "8px",
-        }}>
-        Get Started
-      </Button>
+      <Link to='/auth/login'>
+        <Button
+          variant='contained'
+          color='primary'
+          size='large'
+          sx={{
+            paddingX: 4,
+            paddingY: 1.5,
+            fontSize: "1rem",
+            textTransform: "none",
+            borderRadius: "8px",
+          }}>
+          Get Started
+        </Button>
+      </Link>
     </Box>
   )
 }
