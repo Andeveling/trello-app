@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { api } from "../api/api"
-import { TaskFormData } from "../schemas/task.schema"
+import type { TaskFormData } from "../schemas/task.schema"
+import { assignedToTask } from "../services/task.service"
 
 export const useTaskMutation = ({ onClose }: { onClose?: () => void }) => {
   const queryClient = useQueryClient()
@@ -18,12 +19,11 @@ export const useTaskMutation = ({ onClose }: { onClose?: () => void }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [ "tasks", "columns"],
-
+        queryKey: ["tasks", "columns"],
       })
       if (onClose) onClose()
     },
-    onError: (error: any) => {
+    onError: (error) => {
       console.error("Error creating task:", error)
     },
   })
@@ -36,11 +36,11 @@ export const useTaskMutation = ({ onClose }: { onClose?: () => void }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [ "tasks", "columns" ],
+        queryKey: ["tasks", "columns"],
       })
       if (onClose) onClose()
     },
-    onError: (error: any) => {
+    onError: (error) => {
       console.error("Error updating task:", error)
     },
   })
@@ -52,19 +52,24 @@ export const useTaskMutation = ({ onClose }: { onClose?: () => void }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [ "tasks", "columns" ],
+        queryKey: ["tasks", "columns"],
       })
     },
-    onError: (error: any) => {
+    onError: (error) => {
       console.error("Error deleting task:", error)
     },
   })
 
   const moveTaskMutation = useMutation({
-    mutationFn: async ({ taskId, sourceColumnId, destinationColumnId, newPosition }: {
-      taskId: number;
-      sourceColumnId: number;
-      destinationColumnId: number;
+    mutationFn: async ({
+      taskId,
+      sourceColumnId,
+      destinationColumnId,
+      newPosition,
+    }: {
+      taskId: number
+      sourceColumnId: number
+      destinationColumnId: number
       newPosition: number
     }) => {
       const response = await api.put(`/tasks/${taskId}/position`, {
@@ -77,19 +82,31 @@ export const useTaskMutation = ({ onClose }: { onClose?: () => void }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [ "tasks", "columns" ], // Invalida las queries de tareas y columnas para obtener datos actualizados
+        queryKey: ["tasks", "columns"], // Invalida las queries de tareas y columnas para obtener datos actualizados
       })
     },
-    onError: (error: any) => {
+    onError: (error) => {
       console.error("Error moving task:", error)
     },
   })
 
+  const assignedToTaskMutation = useMutation({
+    mutationFn: ({ taskId, userId }: { taskId: number; userId: number }) => assignedToTask(taskId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["tasks", "columns"],
+      })
+    },
+    onError: (error) => {
+      console.error("Error assigning task:", error)
+    },
+  })
 
   return {
     createTaskMutation,
     updateTaskMutation,
     deleteTaskMutation,
     moveTaskMutation,
+    assignedToTaskMutation,
   }
 }

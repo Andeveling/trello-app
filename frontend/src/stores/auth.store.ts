@@ -1,6 +1,6 @@
-import { create, StateCreator } from "zustand"
+import { create, type StateCreator } from "zustand"
 import { createJSONStorage, devtools, persist } from "zustand/middleware"
-import AuthService, { UserPayload } from "../services/auth.service"
+import AuthService, { type UserPayload } from "../services/auth.service"
 import { AuthStatus } from "../types"
 
 export interface AuthState {
@@ -16,7 +16,7 @@ const storeApi: StateCreator<AuthState> = (set) => ({
   status: AuthStatus.pending,
   user: undefined,
   token: undefined,
-  loginUser: async (email: string, password: string) => {
+  loginUser: async (email, password) => {
     try {
       const { token, user } = await AuthService.login(email, password)
       set({ status: AuthStatus.authorized, user, token })
@@ -33,6 +33,7 @@ const storeApi: StateCreator<AuthState> = (set) => ({
     }
   },
   logoutUser: () => {
+    localStorage.removeItem("auth-store")
     set({ status: AuthStatus.unauthorized, token: undefined, user: undefined })
   },
 })

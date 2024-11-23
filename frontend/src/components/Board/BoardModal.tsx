@@ -1,11 +1,11 @@
-import React from "react"
+import type React from "react"
 import { Modal, Box, TextField, Button, Typography, IconButton } from "@mui/material"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import CloseIcon from "@mui/icons-material/Close"
 import { api } from "../../api/api"
-import { BoardFormData, BoardSchema } from "../../schemas/board.schema"
+import { type BoardFormData, BoardSchema } from "../../schemas/board.schema"
 import { useAuthStore } from "../../stores/auth.store"
 
 interface ProjectModalProps {
@@ -38,7 +38,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ open, onClose }) => {
       })
       onClose()
     },
-    onError: (error: any) => {
+    onError: (error) => {
       console.error("Error in creating board:", error)
     },
   })

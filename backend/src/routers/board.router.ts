@@ -16,6 +16,8 @@ boardRouter.route("/user").get(authMiddleware, rescue(boardController.getByUserI
 // Ruta para obtener un tablero por ID
 boardRouter.route("/:id").get(authMiddleware, rescue(boardController.getById))
 
+boardRouter.route("/:boardId/members").get(authMiddleware, rescue(boardController.getMembersByBoardId))
+
 // Ruta para actualizar un tablero
 boardRouter.route("/:id").put(authMiddleware, rescue(boardController.update))
 

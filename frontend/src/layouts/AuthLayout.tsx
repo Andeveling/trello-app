@@ -5,15 +5,13 @@ import { AuthStatus } from "../types"
 export default function AuthLayout() {
   const authStatus = useAuthStore((state) => state.status)
 
-  if(authStatus === AuthStatus.authorized) {
+  if (authStatus === AuthStatus.pending) {
+    return <div>Loading...</div>
+  }
+
+  if (authStatus === AuthStatus.authorized) {
     return <Navigate to='/dashboard' replace />
   }
-  
 
-
-  return (
-    <>
-      <Outlet />
-    </>
-  )
+  return <Outlet />
 }

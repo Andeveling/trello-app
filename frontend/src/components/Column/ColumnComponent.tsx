@@ -1,8 +1,8 @@
 import { useDroppable } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { Card, CardActions, CardContent, CardHeader } from "@mui/material"
-import React from "react"
-import { Column } from "../../types"
+import type React from "react"
+import type { Column } from "../../types"
 import TaskAction from "../Task/TasckAction"
 import TaskComponent from "../Task/TaskComponent"
 import ColumnActions from "./ColumnActions"
@@ -24,6 +24,7 @@ const ColumnComponent: React.FC<ColumnComponentProps> = ({ column }) => {
       }
     : {}
 
+
   return (
     <Card
       ref={setNodeRef}
@@ -36,15 +37,10 @@ const ColumnComponent: React.FC<ColumnComponentProps> = ({ column }) => {
       }}>
       <CardHeader title={column.name} action={<ColumnActions column={column} />} />
       <CardContent>
-        {/* Contexto de ordenación de tareas dentro de la columna */}
-        <SortableContext
-          items={column.tasks.map((task) => task.id)} // Mapeamos las tareas por su ID
-          strategy={verticalListSortingStrategy} // Estrategia para el ordenamiento vertical
-        >
-          {column.tasks.map((task) => (
-            <TaskComponent key={task.id} task={task} />
-          ))}
-        </SortableContext>
+        {column.tasks.map((task) => {
+          console.log(task)
+          return <TaskComponent key={task.id} task={task} />
+        })}
       </CardContent>
       <CardActions>
         <TaskAction column={column} />

@@ -4,7 +4,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import LogoutIcon from "@mui/icons-material/Logout"
 import MenuIcon from "@mui/icons-material/Menu"
 import ViewKanbanIcon from "@mui/icons-material/ViewKanban"
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar"
+import MuiAppBar, { type AppBarProps as MuiAppBarProps } from "@mui/material/AppBar"
 import Box from "@mui/material/Box"
 import CssBaseline from "@mui/material/CssBaseline"
 import Divider from "@mui/material/Divider"
@@ -20,19 +20,19 @@ import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
 import { useQuery } from "@tanstack/react-query"
 import * as React from "react"
-import { api } from "../api/api"
 import CreateProjectModal from "../components/Board/CreateBoardButton"
-import { AuthStatus, Board } from "../types"
+import { AuthStatus, type Board } from "../types"
 import { Link, Navigate, Outlet } from "react-router-dom"
 import { useAuthStore } from "../stores/auth.store"
+import { getUserBoards } from "../services/board.service"
 
 const drawerWidth = 240
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean
 }>(({ theme }) => ({
-  height: "calc(100vh - 64px)", // Resta la altura del AppBar (64px)
-  overflow: "auto", // Permite hacer scroll en caso de que haya mucho contenido
+  minHeight: "calc(100vh - 64px)",
+  overflow: "auto",
   flexGrow: 1,
   padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {
@@ -94,6 +94,12 @@ export default function PersistentDrawerLeft() {
   const user = useAuthStore((state) => state.user)
   const authStatus = useAuthStore((state) => state.status)
   const logoutUser = useAuthStore((state) => state.logoutUser)
+  
+  const query = useQuery({
+    queryKey: ["boards"],
+    queryFn: getUserBoards,
+    initialData: [],
+  })
 
   if (authStatus === AuthStatus.unauthorized || !user) {
     return <Navigate to='/' />
@@ -110,15 +116,6 @@ export default function PersistentDrawerLeft() {
   const handleDrawerClose = () => {
     setOpen(false)
   }
-
-  const query = useQuery({
-    queryKey: ["boards"],
-    queryFn: async () => {
-      const response = await api.get(`/boards/user`)
-      return response.data
-    },
-    initialData: [],
-  })
 
   return (
     <Box sx={{ display: "flex" }}>

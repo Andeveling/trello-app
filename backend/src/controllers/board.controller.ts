@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express"
+import type { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import prisma from "../lib/prisma"
 
@@ -124,6 +124,28 @@ class BoardController {
       return next({
         status: StatusCodes.INTERNAL_SERVER_ERROR,
         message: "Error fetching board",
+      })
+    }
+  }
+
+  // Obtener los miembros de un tablero
+  async getMembersByBoardId(req: Request, res: Response, next: NextFunction) {
+    const { boardId } = req.params
+
+    try {
+      const members = await prisma.boardMember.findMany({
+        where: { boardId: Number(boardId) },
+        include: {
+          user: { select: { id: true, name: true, email: true } },
+        },
+      })
+
+      res.status(StatusCodes.OK).json(members)
+    } catch (error) {
+      console.error(error)
+      return next({
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: "Error fetching board members",
       })
     }
   }

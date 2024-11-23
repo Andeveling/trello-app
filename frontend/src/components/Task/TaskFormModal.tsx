@@ -1,8 +1,13 @@
-import React from "react"
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import type React from "react"
+import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
+import { useQueryClient } from "@tanstack/react-query"
+import { useParams } from "react-router-dom"
+import { useMembersBoardQuery } from "../../hooks/useMembersBoardQuery"
+import { assignedToTask } from "../../services/task.service"
+import { useTaskMutation } from "../../hooks/useTaskMutation"
 
 const TaskSchema = z.object({
   title: z.string().min(1, "Title is required").max(255, "Title is too long"),
@@ -25,6 +30,7 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ open, onClose, onSubmit }
     formState: { errors },
   } = useForm<TaskFormData>({
     resolver: zodResolver(TaskSchema),
+
     defaultValues: {
       title: "",
       description: "",
@@ -33,8 +39,8 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({ open, onClose, onSubmit }
 
   const handleFormSubmit = (data: TaskFormData) => {
     onSubmit(data)
-    reset() 
-    onClose() 
+    reset()
+    onClose()
   }
 
   return (

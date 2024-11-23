@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { ColumnFormData } from "../schemas/column.schema"
+import type { ColumnFormData } from "../schemas/column.schema"
 import { api } from "../api/api"
 
 export const useColumnMutation = ({ onClose }: { onClose: () => void }) => {
@@ -19,7 +19,7 @@ export const useColumnMutation = ({ onClose }: { onClose: () => void }) => {
       })
       onClose()
     },
-    onError: (error: any) => {
+    onError: (error) => {
       console.error("Error in creating column:", error)
     },
   })

@@ -1,53 +1,45 @@
-import { DndContext, DragEndEvent, DragStartEvent } from "@dnd-kit/core"
+import { DndContext, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core"
 import { Box, Paper, Stack } from "@mui/material"
-import React from "react"
-import ColumnComponent from "../Column/ColumnComponent"
+import type React from "react"
 import { useParams } from "react-router-dom"
 import { useColumnsQueryByBoard } from "../../hooks/useColumnsQueryByBoard"
 import { useTaskMutation } from "../../hooks/useTaskMutation"
+import ColumnComponent from "../Column/ColumnComponent"
 
 const Board: React.FC = () => {
   const { boardId } = useParams()
   const { data: columns } = useColumnsQueryByBoard(Number(boardId))
   const { moveTaskMutation } = useTaskMutation({ onClose: () => console.log("close") })
 
-const handleDragEnd = (event: DragEndEvent) => {
-  const { active, over } = event
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
 
-  if (over) {
-    // Encontrar las columnas de origen y destino
-    const sourceColumnIndex = columns.findIndex((column) =>
-      column.tasks.some((task) => task.id === active.id)
-    )
-    const destinationColumnIndex = columns.findIndex((column) => column.id === over.id)
+    if (over) {
+      const sourceColumnIndex = columns.findIndex((column) => column.tasks.some((task) => task.id === active.id))
+      const destinationColumnIndex = columns.findIndex((column) => column.id === over.id)
 
-    if (sourceColumnIndex !== destinationColumnIndex) {
-      const sourceColumn = columns[sourceColumnIndex]
-      const destinationColumn = columns[destinationColumnIndex]
+      if (sourceColumnIndex !== destinationColumnIndex) {
+        const sourceColumn = columns[sourceColumnIndex]
+        const destinationColumn = columns[destinationColumnIndex]
 
-      // Obtener la tarea que se está moviendo
-      const movedTask = sourceColumn.tasks.find((task) => task.id === active.id)
+        const movedTask = sourceColumn.tasks.find((task) => task.id === active.id)
 
-      if (movedTask) {
-        // Calcular la nueva posición de la tarea en la columna destino
-        const newPosition = destinationColumn.tasks.length + 1
+        if (movedTask) {
+          const newPosition = destinationColumn.tasks.length + 1
 
-        // Llamar a la mutación para mover la tarea
-        moveTaskMutation.mutate({
-          taskId: movedTask.id,
-          sourceColumnId: sourceColumn.id,
-          destinationColumnId: destinationColumn.id,
-          newPosition: newPosition, // Nueva posición en la columna destino
-        })
+          moveTaskMutation.mutate({
+            taskId: movedTask.id,
+            sourceColumnId: sourceColumn.id,
+            destinationColumnId: destinationColumn.id,
+            newPosition: newPosition,
+          })
 
-        // Opcional: Actualizar el estado local de las columnas, si no estás usando cache global
-        sourceColumn.tasks = sourceColumn.tasks.filter((task) => task.id !== active.id)
-        destinationColumn.tasks.push(movedTask)
+          sourceColumn.tasks = sourceColumn.tasks.filter((task) => task.id !== active.id)
+          destinationColumn.tasks.push(movedTask)
+        }
       }
     }
   }
-}
-
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event

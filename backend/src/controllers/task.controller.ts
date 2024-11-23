@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express"
+import type { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import prisma from "../lib/prisma"
 
@@ -183,6 +183,57 @@ class TaskController {
       })
     }
   }
+
+  async assignTask(req: Request, res: Response, next: NextFunction) {
+    const { taskId, userId } = req.params
+    console.log("taskId, userId", taskId, userId)
+    if (!taskId || !userId) {
+      return next({
+        status: StatusCodes.BAD_REQUEST,
+        message: "taskId and userId are required",
+      })
+    }
+
+    try {
+      const task = await prisma.task.findUnique({
+        where: { id: Number(taskId) },
+      })
+
+      if (!task) {
+        return next({
+          status: StatusCodes.NOT_FOUND,
+          message: "Task not found",
+        })
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { id: Number(userId) },
+      })
+
+      if (!user) {
+        return next({
+          status: StatusCodes.NOT_FOUND,
+          message: "User not found",
+        })
+      }
+
+      // Asignar la tarea al usuario
+      const updatedTask = await prisma.task.update({
+        where: { id: Number(taskId) },
+        data: {
+          assignedToId: Number(userId),
+        },
+      })
+
+      res.status(StatusCodes.OK).json(updatedTask)
+    } catch (error) {
+      console.error("Error assigning task:", error)
+      return next({
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: "Error assigning task",
+      })
+    }
+  } 
 
   // Eliminar una tarea
   async delete(req: Request, res: Response, next: NextFunction) {
